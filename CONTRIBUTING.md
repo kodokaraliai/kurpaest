@@ -34,4 +34,4 @@ Do not instruct anyone to open the built files via `file://`.
 
 ## Issues
 
-Claim the GitHub issue before you start (assign yourself). One work package per PR unless the issue says otherwise.
+Claim the GitHub issue before you start (assign yourself): [kodokaraliai/kurpaest/issues](https://github.com/kodokaraliai/kurpaest/issues). One work package per PR unless the issue says otherwise.

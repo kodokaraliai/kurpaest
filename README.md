@@ -2,7 +2,7 @@
 
 Queryable map of places to eat in Lithuania, with an itemized menu per place — so you can find the cheapest kebab, or filter by dietary preference, instead of browsing restaurant names.
 
-Group project of [kodokaraliai](https://github.com/kodokaraliai). How we intend to build it: [docs/architecture.md](docs/architecture.md).
+Group project of [kodokaraliai](https://github.com/kodokaraliai): **[kodokaraliai/kurpaest](https://github.com/kodokaraliai/kurpaest)**. How we intend to build it: [docs/architecture.md](docs/architecture.md). Work packages are GitHub issues: [kodokaraliai/kurpaest/issues](https://github.com/kodokaraliai/kurpaest/issues).
 
 This repository is a **launchable skeleton** plus that architecture. The map, menus, cheapest-item search, and dietary filters are GitHub issues, not this first commit.
 
