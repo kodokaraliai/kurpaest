@@ -3,8 +3,7 @@ import PlacePanel from "./PlacePanel.jsx";
 import PlacesMap from "./PlacesMap.jsx";
 import ResultsList from "./ResultsList.jsx";
 import { COPY, DIETARY_IDS } from "./copy.js";
-import { matchingItems, placesForItems } from "./matchItems.js";
-import MOCK_ITEMS from "./mock/items.json";
+import { placesForItems } from "./matchItems.js";
 import "./App.css";
 
 const LANG_KEY = "kurpaest.lang";
@@ -27,6 +26,9 @@ function App() {
   const [dietary, setDietary] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [openPlaceId, setOpenPlaceId] = useState(null);
+  const [results, setResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   const copy = COPY[lang];
 
   useEffect(() => {
@@ -39,10 +41,53 @@ function App() {
   }, [lang]);
 
   const queryActive = term.trim() !== "" || dietary.length > 0;
-  const results = useMemo(
-    () => matchingItems(MOCK_ITEMS, { term, dietary }),
-    [term, dietary],
-  );
+
+  useEffect(() => {
+    if (!queryActive) {
+      setResults([]);
+      setSearchError(null);
+      setSearchLoading(false);
+      return undefined;
+    }
+    const controller = new AbortController();
+    setSearchLoading(true);
+    const timer = window.setTimeout(async () => {
+      const params = new URLSearchParams();
+      if (term.trim()) {
+        params.set("q", term.trim());
+      }
+      params.set("sort", "price");
+      if (dietary.length > 0) {
+        params.set("dietary", dietary.join(","));
+      }
+      try {
+        const response = await fetch(`/api/items?${params.toString()}`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          throw new Error(`items ${response.status}`);
+        }
+        const body = await response.json();
+        setResults(Array.isArray(body.items) ? body.items : []);
+        setSearchError(null);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+        setResults([]);
+        setSearchError(copy.searchError);
+      } finally {
+        if (!controller.signal.aborted) {
+          setSearchLoading(false);
+        }
+      }
+    }, 300);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [term, dietary, queryActive, copy.searchError]);
+
   const mapPlaces = useMemo(
     () => (queryActive ? placesForItems(results) : undefined),
     [queryActive, results],
@@ -154,6 +199,8 @@ function App() {
             copy={copy}
             selectedId={selectedId}
             onSelect={(item) => setSelectedId(item.id)}
+            loading={searchLoading}
+            error={searchError}
           />
         )}
       </div>

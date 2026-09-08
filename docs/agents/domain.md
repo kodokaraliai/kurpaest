@@ -20,6 +20,7 @@ src/kurpaest/domain.py  WP-1 types
 src/kurpaest/persistence/  WP-2 PostGIS adapter
 src/kurpaest/places.py  WP-3 viewport query (`places_in_bounds`)
 src/kurpaest/menus.py   WP-4 `menu_for_place` (no HTTP)
+src/kurpaest/items.py   WP-5 `cheapest_items` (no HTTP)
 src/kurpaest/catalog.py  map pins and menus from the WP-8 seed
 src/kurpaest/seed.py    WP-8 JSON → domain types
 seed/vilnius.json       reviewed Vilnius places + menus

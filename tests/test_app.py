@@ -155,3 +155,56 @@ def test_place_menu_lists_priced_items() -> None:
 def test_place_menu_unknown_id_is_404() -> None:
     response = TestClient(app).get(f"/places/{uuid4()}/menu")
     assert response.status_code == 404
+
+
+def test_items_kebab_returns_cheapest_first_with_place() -> None:
+    response = TestClient(app).get("/items", params={"q": "kebab", "sort": "price"})
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert items
+    assert items[0]["name"] == "Kebabas"
+    assert items[0]["price_cents"] == 499
+    assert isinstance(items[0]["price_cents"], int)
+    assert items[0]["place"]["slug"] == "fabijoniskiu-valgykla"
+    assert isinstance(items[0]["place"]["lat"], float)
+    assert isinstance(items[0]["place"]["lng"], float)
+    assert items[0]["place"]["name"]
+    prices = [row["price_cents"] for row in items]
+    assert prices == sorted(prices)
+
+
+def test_items_seeded_name_literal_match() -> None:
+    response = TestClient(app).get("/items", params={"q": "Kebabas pita"})
+    assert response.status_code == 200
+    names = [row["name"] for row in response.json()["items"]]
+    assert names == ["Kebabas pita"]
+
+
+def test_items_rejects_unknown_sort() -> None:
+    response = TestClient(app).get("/items", params={"q": "kebab", "sort": "name"})
+    assert response.status_code == 400
+
+
+def test_items_geo_limits_to_radius() -> None:
+    client = TestClient(app)
+    old_town = client.get(
+        "/items",
+        params={
+            "q": "kebab",
+            "near": "54.6818,25.2874",
+            "radius_m": 800,
+        },
+    )
+    assert old_town.status_code == 200
+    slugs = {row["place"]["slug"] for row in old_town.json()["items"]}
+    assert "senamiescio-kebabine" in slugs
+    assert "fabijoniskiu-valgykla" not in slugs
+    assert all("distance_m" in row for row in old_town.json()["items"])
+
+
+def test_items_near_without_radius_is_400() -> None:
+    response = TestClient(app).get(
+        "/items",
+        params={"q": "kebab", "near": "54.68,25.27"},
+    )
+    assert response.status_code == 400

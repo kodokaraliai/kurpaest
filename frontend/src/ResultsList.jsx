@@ -7,12 +7,26 @@ export default function ResultsList({
   copy,
   selectedId,
   onSelect,
+  loading = false,
+  error = null,
 }) {
   let body;
   if (!active) {
     body = (
       <p className="empty-state" role="status">
         {copy.searchPrompt}
+      </p>
+    );
+  } else if (loading) {
+    body = (
+      <p className="empty-state" role="status">
+        {copy.searching}
+      </p>
+    );
+  } else if (error) {
+    body = (
+      <p className="empty-state" role="status">
+        {error}
       </p>
     );
   } else if (items.length === 0) {
