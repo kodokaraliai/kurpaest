@@ -66,6 +66,7 @@ export default function PlacesMap({
   places: controlledPlaces,
   selectedPlace,
   labels,
+  onSelectPlace,
 }) {
   const fetchMode = controlledPlaces == null;
   const [fetched, setFetched] = useState([]);
@@ -140,6 +141,9 @@ export default function PlacesMap({
             key={place.id}
             position={[place.lat, place.lng]}
             title={place.name}
+            eventHandlers={{
+              click: () => onSelectPlace?.(place),
+            }}
           >
             <Popup>
               <strong>{place.name}</strong>

@@ -1,9 +1,12 @@
 """Drive the shipped HTTP entry — the real FastAPI app, not a stand-in."""
 
+from uuid import uuid4
+
 from fastapi.testclient import TestClient
 
 from kurpaest.app import SERVICE_NAME, SERVICE_STATUS_OK, SITE, app, root
-from kurpaest.catalog import PLACES
+from kurpaest.catalog import ITEMS, MENUS, PLACES
+from kurpaest.menus import menu_for_place, menu_record_for_place
 
 VILNIUS_BBOX = "54.66,25.22,54.71,25.34"
 LITHUANIA_BBOX = "53.8,20.9,56.5,26.9"
@@ -89,3 +92,66 @@ def test_seed_catalog_is_what_the_http_seam_serves() -> None:
     assert "senamiescio-kebabine" in slugs
     assert "saknys" in slugs
     assert "fabijoniskiu-valgykla" in slugs
+
+
+def _kebab_place():
+    return next(place for place in PLACES if place.slug == "senamiescio-kebabine")
+
+
+def test_place_detail_returns_hours_and_last_verified_at() -> None:
+    place = _kebab_place()
+    menu = menu_record_for_place(MENUS, place.id)
+    assert menu is not None
+    response = TestClient(app).get(f"/places/{place.id}")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == str(place.id)
+    assert body["name"] == place.name
+    assert body["slug"] == place.slug
+    assert body["address"] == place.address
+    assert body["city"] == "Vilnius"
+    assert isinstance(body["lat"], float)
+    assert isinstance(body["lng"], float)
+    assert body["hours"]
+    assert body["hours"][0]["weekday"] == 0
+    assert body["last_verified_at"] == menu.last_verified_at.isoformat()
+    assert body["currency"] == "EUR"
+
+
+def test_place_detail_unknown_id_is_404() -> None:
+    response = TestClient(app).get(f"/places/{uuid4()}")
+    assert response.status_code == 404
+
+
+def test_place_detail_rejects_non_uuid() -> None:
+    response = TestClient(app).get("/places/senamiescio-kebabine")
+    assert response.status_code == 400
+    assert "UUID" in response.json()["detail"]
+
+
+def test_place_menu_lists_priced_items() -> None:
+    place = _kebab_place()
+    expected = menu_for_place(ITEMS, place.id)
+    response = TestClient(app).get(f"/places/{place.id}/menu")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["place_id"] == str(place.id)
+    assert body["currency"] == "EUR"
+    assert body["last_verified_at"]
+    assert len(body["items"]) == len(expected)
+    names = [item["name"] for item in body["items"]]
+    assert names == [item.name for item in expected]
+    for row, item in zip(body["items"], expected, strict=True):
+        assert row["price_cents"] == item.price_cents
+        assert isinstance(row["price_cents"], int)
+        assert row["category"] == str(item.category)
+        assert row["dietary_tags"] == sorted(str(tag) for tag in item.dietary_tags)
+        assert "search_tokens" not in row
+    doner = next(row for row in body["items"] if row["name"] == "Döner")
+    assert doner["dietary_tags"] == ["halal"]
+    assert doner["name_en"] == "Doner"
+
+
+def test_place_menu_unknown_id_is_404() -> None:
+    response = TestClient(app).get(f"/places/{uuid4()}/menu")
+    assert response.status_code == 404
