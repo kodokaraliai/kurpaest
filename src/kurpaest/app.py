@@ -9,7 +9,7 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-from kurpaest.catalog import MOCK_PLACES
+from kurpaest.catalog import PLACES
 from kurpaest.domain import Place
 from kurpaest.places import parse_bbox, places_in_bounds
 
@@ -61,5 +61,5 @@ def list_places(
         south, west, north, east = parse_bbox(bbox or "")
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    found = places_in_bounds(MOCK_PLACES, south, west, north, east, city=city)
+    found = places_in_bounds(PLACES, south, west, north, east, city=city)
     return {"places": [_place_pin(place) for place in found]}

@@ -29,7 +29,7 @@ The API listens on `http://127.0.0.1:8000/`. `GET /` returns JSON:
 {"service": "kurpaest", "status": "ok", "site": "kurpaest.lt"}
 ```
 
-`GET /places?bbox=s,w,n,e` returns map pins in that viewport (`city` is optional). Bbox is required — the handler does not download the whole country. Until WP-8 seed data lands, pins come from an in-memory Vilnius-ish catalog.
+`GET /places?bbox=s,w,n,e` returns map pins in that viewport (`city` is optional). Bbox is required — the handler does not download the whole country. Pins come from the reviewed Vilnius seed (`seed/vilnius.json`).
 
 `uv run python -m kurpaest` is the same entry. `--host` and `--port` are optional.
 
@@ -49,6 +49,14 @@ uv run pytest tests/test_persistence.py -q
 ```
 
 That includes `test_store_save_load_round_trip` against the real database. The rest of the suite: `uv run pytest`.
+
+Vilnius seed (places + itemized menus) lives in `seed/vilnius.json`. Load it through the WP-2 store:
+
+```bash
+uv run python -m kurpaest.persistence.load_seed
+```
+
+The HTTP map reads the same JSON in-process. Re-running the import upserts by id.
 
 ## Frontend
 
@@ -75,6 +83,7 @@ npm run preview
 ```
 src/kurpaest/     Python package (HTTP entry in app.py, domain in domain.py)
 src/kurpaest/persistence/  PostGIS adapter
+seed/             Vilnius places + itemized menus (JSON)
 migrations/       SQL schema (PostGIS geography + gist)
 compose.yaml      local Postgres + PostGIS
 tests/            pytest — drives the real ASGI app and domain/persistence
