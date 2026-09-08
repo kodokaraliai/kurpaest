@@ -157,6 +157,22 @@ def test_place_menu_unknown_id_is_404() -> None:
     assert response.status_code == 404
 
 
+def test_items_alias_giros_and_saurma_hit_kebab_rows() -> None:
+    client = TestClient(app)
+    giros = client.get("/items", params={"q": "giros", "sort": "price"})
+    saurma = client.get("/items", params={"q": "šaurma", "sort": "price"})
+    cepelinai = client.get("/items", params={"q": "didžkukuliai"})
+    assert giros.status_code == 200
+    assert saurma.status_code == 200
+    assert cepelinai.status_code == 200
+    giros_items = giros.json()["items"]
+    assert giros_items[0]["name"] == "Kebabas"
+    assert giros_items[0]["price_cents"] == 499
+    saurma_names = {row["name"] for row in saurma.json()["items"]}
+    assert "Šaurma" in saurma_names
+    assert any(row["name"] == "Cepelinai su mėsa" for row in cepelinai.json()["items"])
+
+
 def test_items_kebab_returns_cheapest_first_with_place() -> None:
     response = TestClient(app).get("/items", params={"q": "kebab", "sort": "price"})
     assert response.status_code == 200

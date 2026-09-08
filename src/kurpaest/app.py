@@ -187,7 +187,7 @@ def list_items(
     dietary: str | None = Query(default=None),
     limit: int = Query(default=20),
 ) -> dict[str, list[dict[str, object]]]:
-    """Cheapest matching items, each with its place. Literal match; aliases are WP-7."""
+    """Cheapest matching items with place. Aliases and diacritic folding apply."""
     if sort != "price":
         raise HTTPException(status_code=400, detail="sort must be price")
     point = None

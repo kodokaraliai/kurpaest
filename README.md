@@ -33,7 +33,7 @@ The API listens on `http://127.0.0.1:8000/`. `GET /` returns JSON:
 
 `GET /places/{id}` is place detail (hours, `last_verified_at`). `GET /places/{id}/menu` is the itemized menu: integer `price_cents`, currency EUR, dietary tags. Clicking a map pin opens that menu in the Vite app.
 
-`GET /items?q=kebab&sort=price` is cheapest-item search (optional `city`, `near=lat,lng`, `radius_m`, `dietary`). Matching is literal/token; Lithuanian aliases are a later work package. The Vite search box lists those rows and jumps each to its pin.
+`GET /items?q=kebab&sort=price` is cheapest-item search (optional `city`, `near=lat,lng`, `radius_m`, `dietary`). Queries expand through a small alias table (`kebab`/`giros`/`šaurma`, `cepelinai`/`didžkukuliai`) and fold Lithuanian diacritics for matching; display keeps the original spelling. The Vite search box lists those rows and jumps each to its pin.
 
 Dietary chips are conjunctive and stateless (`dietary=vegan,gluten_free`). Unknown tags on an item do not match. `GET /places?bbox=&dietary=` keeps pins for places that have at least one verified matching item.
 
