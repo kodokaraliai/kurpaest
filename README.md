@@ -29,6 +29,8 @@ The API listens on `http://127.0.0.1:8000/`. `GET /` returns JSON:
 {"service": "kurpaest", "status": "ok", "site": "kurpaest.lt"}
 ```
 
+`GET /places?bbox=s,w,n,e` returns map pins in that viewport (`city` is optional). Bbox is required — the handler does not download the whole country. Until WP-8 seed data lands, pins come from an in-memory Vilnius-ish catalog.
+
 `uv run python -m kurpaest` is the same entry. `--host` and `--port` are optional.
 
 ## Database (Postgres + PostGIS)

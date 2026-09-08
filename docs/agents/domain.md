@@ -18,4 +18,6 @@ docs/architecture.md    product + domain + WP split
 docs/agents/            night-shift, tracker, labels
 src/kurpaest/domain.py  WP-1 types
 src/kurpaest/persistence/  WP-2 PostGIS adapter
+src/kurpaest/places.py  WP-3 viewport query (`places_in_bounds`)
+src/kurpaest/catalog.py  in-memory pins until WP-8
 ```
