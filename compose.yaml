@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgis/postgis:16-3.5
+    container_name: kurpaest-db
+    environment:
+      POSTGRES_USER: kurpaest
+      POSTGRES_PASSWORD: kurpaest
+      POSTGRES_DB: kurpaest
+    ports:
+      - "5432:5432"
+    volumes:
+      - kurpaest_pgdata:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kurpaest -d kurpaest"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  kurpaest_pgdata:

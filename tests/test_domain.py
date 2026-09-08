@@ -23,7 +23,20 @@ from kurpaest.domain import (
 
 DOMAIN_SOURCE = Path(__file__).resolve().parents[1] / "src" / "kurpaest" / "domain.py"
 HTTP_LIBRARIES = frozenset(
-    {"fastapi", "starlette", "flask", "django", "httpx", "aiohttp", "uvicorn"}
+    {
+        "fastapi",
+        "starlette",
+        "flask",
+        "django",
+        "httpx",
+        "aiohttp",
+        "uvicorn",
+        "sqlalchemy",
+        "psycopg",
+        "alembic",
+        "asyncpg",
+        "geoalchemy2",
+    }
 )
 
 VILNIUS_LAT = 54.6872
@@ -151,4 +164,11 @@ def test_domain_module_does_not_import_http_libraries() -> None:
         elif isinstance(node, ast.ImportFrom) and node.module:
             imported.add(node.module.split(".")[0])
     assert imported.isdisjoint(HTTP_LIBRARIES)
-    assert imported <= {"__future__", "math", "dataclasses", "datetime", "enum", "uuid"}
+    assert imported <= {
+        "__future__",
+        "math",
+        "dataclasses",
+        "datetime",
+        "enum",
+        "uuid",
+    }
