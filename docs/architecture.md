@@ -253,7 +253,7 @@ No ORM requirement. If we use one, keep it out of the domain types (SQLAlchemy m
 
 JSON, EUR as cents, coordinates as numbers. Lithuanian names as stored; the client can show `name` or `name_en`.
 
-The current skeleton only implements `GET /`. That is intentional.
+`GET /` is the identity endpoint. `GET /places?bbox=s,w,n,e` is WP-3 (pins for the current viewport).
 
 ### 5.3 Frontend sketch
 

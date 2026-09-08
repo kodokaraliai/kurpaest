@@ -1,3 +1,4 @@
+import PlacesMap from "./PlacesMap.jsx";
 import "./App.css";
 
 const DIETARY = [
@@ -48,17 +49,7 @@ function App() {
         ))}
       </div>
 
-      <section
-        className="map-placeholder"
-        aria-label="Map of places to eat"
-      >
-        <p>
-          The map, itemized menus, cheapest-item search, and dietary filters
-          are the work packages in{" "}
-          <code>docs/architecture.md</code> — this page is the launchable
-          shell.
-        </p>
-      </section>
+      <PlacesMap />
     </div>
   );
 }

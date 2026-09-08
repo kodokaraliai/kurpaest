@@ -1,12 +1,17 @@
-"""HTTP entry for the kurpaest.lt skeleton.
+"""HTTP seam for kurpaest.lt.
 
-The ASGI app is a replaceable seam. Domain query/filter logic belongs in
-modules that do not import FastAPI; this file only exposes a launchable
-identity endpoint until those packages land.
+Route handlers validate HTTP and call domain query functions. Cheapest-item,
+dietary, and geo logic must not live here.
 """
 
-from fastapi import FastAPI
+from __future__ import annotations
+
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+
+from kurpaest.catalog import MOCK_PLACES
+from kurpaest.domain import Place
+from kurpaest.places import parse_bbox, places_in_bounds
 
 SERVICE_NAME = "kurpaest"
 SERVICE_STATUS_OK = "ok"
@@ -32,3 +37,29 @@ def root() -> dict[str, str]:
         "status": SERVICE_STATUS_OK,
         "site": SITE,
     }
+
+
+def _place_pin(place: Place) -> dict[str, object]:
+    return {
+        "id": str(place.id),
+        "name": place.name,
+        "slug": place.slug,
+        "lat": place.lat,
+        "lng": place.lng,
+        "address": place.address,
+        "city": place.city,
+    }
+
+
+@app.get("/places")
+def list_places(
+    bbox: str | None = Query(default=None, description="s,w,n,e WGS84 viewport"),
+    city: str | None = Query(default=None),
+) -> dict[str, list[dict[str, object]]]:
+    """Map pins for the current viewport. Does not download the whole country."""
+    try:
+        south, west, north, east = parse_bbox(bbox or "")
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    found = places_in_bounds(MOCK_PLACES, south, west, north, east, city=city)
+    return {"places": [_place_pin(place) for place in found]}
