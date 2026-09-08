@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from kurpaest.domain import Currency, DietaryTag, ItemCategory
-from kurpaest.seed import SEED_PATH, load_seed
+from kurpaest.seed import SEED_PATH, load_seed, seed_from_payload
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED_SOURCE = ROOT / "src" / "kurpaest" / "seed.py"
@@ -130,6 +130,82 @@ def test_seed_mixed_menu_has_partial_tags() -> None:
     assert tagged
     assert untagged
     assert any(item.category is ItemCategory.PIZZA for item in pizza_items)
+
+
+def _contribution() -> dict:
+    return {
+        "places": [
+            {
+                "name": "Testo kebabinė",
+                "slug": "testo-kebabine",
+                "lat": 54.6818,
+                "lng": 25.2874,
+                "address": "Pilies g. 1, Vilnius",
+                "city": "Vilnius",
+                "menu": {
+                    "currency": "EUR",
+                    "language": "lt",
+                    "last_verified_at": "2026-09-08T12:00:00+00:00",
+                    "items": [
+                        {
+                            "name": "Veganiškas kebabas",
+                            "price_cents": 550,
+                            "category": "kebab",
+                            "dietary_tags": [],
+                        }
+                    ],
+                },
+            }
+        ]
+    }
+
+
+def test_contribution_requires_coordinates() -> None:
+    payload = _contribution()
+    del payload["places"][0]["lat"]
+    with pytest.raises(ValueError, match="lat"):
+        seed_from_payload(payload)
+    payload = _contribution()
+    payload["places"][0]["lat"] = None
+    with pytest.raises(ValueError):
+        seed_from_payload(payload)
+
+
+def test_contribution_requires_integer_price_cents() -> None:
+    payload = _contribution()
+    del payload["places"][0]["menu"]["items"][0]["price_cents"]
+    with pytest.raises(ValueError, match="price_cents"):
+        seed_from_payload(payload)
+    payload = _contribution()
+    payload["places"][0]["menu"]["items"][0]["price_cents"] = 5.50
+    with pytest.raises(TypeError):
+        seed_from_payload(payload)
+
+
+def test_contribution_requires_last_verified_at_with_timezone() -> None:
+    payload = _contribution()
+    del payload["places"][0]["menu"]["last_verified_at"]
+    with pytest.raises(ValueError, match="last_verified_at"):
+        seed_from_payload(payload)
+    payload = _contribution()
+    payload["places"][0]["menu"]["last_verified_at"] = "2026-09-08T12:00:00"
+    with pytest.raises(ValueError, match="timezone"):
+        seed_from_payload(payload)
+
+
+def test_contribution_does_not_infer_dietary_tags_from_the_name() -> None:
+    seed = seed_from_payload(_contribution())
+    item = seed.items[0]
+    assert item.name == "Veganiškas kebabas"
+    assert item.dietary_tags == frozenset()
+    assert DietaryTag.VEGAN not in item.dietary_tags
+
+
+def test_seed_from_payload_accepts_a_valid_contribution() -> None:
+    seed = seed_from_payload(_contribution())
+    assert seed.places[0].slug == "testo-kebabine"
+    assert seed.items[0].price_cents == 550
+    assert seed.menus[0].last_verified_at.tzinfo is not None
 
 
 def test_seed_module_does_not_import_http_or_database() -> None:
