@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 
-CREATE TABLE places (
+CREATE TABLE IF NOT EXISTS places (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     slug TEXT NOT NULL,
@@ -15,9 +15,9 @@ CREATE TABLE places (
     UNIQUE (city, slug)
 );
 
-CREATE INDEX places_location_gix ON places USING gist (location);
+CREATE INDEX IF NOT EXISTS places_location_gix ON places USING gist (location);
 
-CREATE TABLE menus (
+CREATE TABLE IF NOT EXISTS menus (
     id UUID PRIMARY KEY,
     place_id UUID NOT NULL REFERENCES places (id),
     currency TEXT NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE menus (
     language TEXT NOT NULL
 );
 
-CREATE TABLE menu_items (
+CREATE TABLE IF NOT EXISTS menu_items (
     id UUID PRIMARY KEY,
     place_id UUID NOT NULL REFERENCES places (id),
     menu_id UUID NOT NULL REFERENCES menus (id),
@@ -38,5 +38,5 @@ CREATE TABLE menu_items (
     search_tokens TEXT[] NOT NULL DEFAULT '{}'
 );
 
-CREATE INDEX menu_items_place_id_idx ON menu_items (place_id);
-CREATE INDEX menu_items_menu_id_idx ON menu_items (menu_id);
+CREATE INDEX IF NOT EXISTS menu_items_place_id_idx ON menu_items (place_id);
+CREATE INDEX IF NOT EXISTS menu_items_menu_id_idx ON menu_items (menu_id);

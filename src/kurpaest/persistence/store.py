@@ -100,7 +100,22 @@ WHERE id = %(id)s
 """
 
 
+def _load_dotenv() -> None:
+    if os.environ.get("DATABASE_URL"):
+        return
+    env_path = Path(__file__).resolve().parents[3] / ".env"
+    if not env_path.is_file():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, _, value = stripped.partition("=")
+        os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
 def connect(url: str | None = None) -> psycopg.Connection:
+    _load_dotenv()
     dsn = url or os.environ.get("DATABASE_URL")
     if not dsn:
         raise RuntimeError("DATABASE_URL is not set")

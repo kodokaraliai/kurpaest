@@ -59,7 +59,7 @@ def _place() -> Place:
     return Place(
         id=uuid4(),
         name="Kebabinė",
-        slug="kebabine",
+        slug=f"kebabine-{uuid4().hex[:8]}",
         lat=VILNIUS_LAT,
         lng=VILNIUS_LNG,
         address="Gedimino pr. 1",

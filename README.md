@@ -40,6 +40,14 @@ cp .env.example .env   # DATABASE_URL=postgresql://kurpaest:kurpaest@127.0.0.1:5
 
 `compose.yaml` starts `postgis/postgis`. Schema lives in `migrations/` (`geography(Point, 4326)` plus a gist index on `places.location`). First container boot applies those files via `/docker-entrypoint-initdb.d`. The Python adapter is `kurpaest.persistence.Store` (save/load of WP-1 domain types).
 
+With the container healthy and `.env` present:
+
+```bash
+uv run pytest tests/test_persistence.py -q
+```
+
+That includes `test_store_save_load_round_trip` against the real database. The rest of the suite: `uv run pytest`.
+
 ## Frontend
 
 Vite **must be served**. Opening `index.html` as `file://` will not work.
