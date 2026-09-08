@@ -80,6 +80,10 @@ frontend/         React + Vite
 docs/architecture.md
 ```
 
+## Agents
+
+`AGENTS.md` is the always-loaded instruction file. Product language is `docs/architecture.md`. Night shift (VPS / unattended drain of `ready-for-agent` issues): `./scripts/night-shift.sh` (prompt: `docs/agents/night-shift.md`).
+
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Pick up a GitHub issue that maps to a work package in the architecture doc.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Pick up a GitHub issue that maps to a work package in the architecture doc. Label an issue `ready-for-agent` only when its brief is complete enough for an unattended run.

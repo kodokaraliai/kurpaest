@@ -35,3 +35,5 @@ Do not instruct anyone to open the built files via `file://`.
 ## Issues
 
 Claim the GitHub issue before you start (assign yourself): [kodokaraliai/kurpaest/issues](https://github.com/kodokaraliai/kurpaest/issues). One work package per PR unless the issue says otherwise.
+
+Unattended overnight drain: label complete briefs `ready-for-agent`, then on a worker clone run `./scripts/night-shift.sh` inside tmux (see `docs/agents/night-shift.md`).
