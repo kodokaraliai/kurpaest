@@ -1,0 +1,261 @@
+{
+  "places": [
+    {
+      "name": "Senamiesčio kebabinė",
+      "slug": "senamiescio-kebabine",
+      "lat": 54.6818,
+      "lng": 25.2874,
+      "address": "Pilies g. 8, Vilnius",
+      "city": "Vilnius",
+      "hours": [
+        {"weekday": 0, "open_minute": 600, "close_minute": 1380},
+        {"weekday": 1, "open_minute": 600, "close_minute": 1380},
+        {"weekday": 2, "open_minute": 600, "close_minute": 1380},
+        {"weekday": 3, "open_minute": 600, "close_minute": 1380},
+        {"weekday": 4, "open_minute": 600, "close_minute": 1440},
+        {"weekday": 5, "open_minute": 660, "close_minute": 1440},
+        {"weekday": 6, "open_minute": 720, "close_minute": 1320}
+      ],
+      "menu": {
+        "currency": "EUR",
+        "language": "lt",
+        "last_verified_at": "2026-09-08T12:00:00+00:00",
+        "items": [
+          {
+            "name": "Kebabas pita",
+            "name_en": "Kebab in pita",
+            "description": "Kiaulienos ir jautienos kebabas, salotos, padažas.",
+            "price_cents": 550,
+            "category": "kebab",
+            "dietary_tags": [],
+            "search_tokens": ["kebab", "kebabas", "doner", "pita"]
+          },
+          {
+            "name": "Kebabas lėkštėje",
+            "name_en": "Kebab plate",
+            "description": "Kebabas su bulvytėmis ir salotomis.",
+            "price_cents": 790,
+            "category": "kebab",
+            "dietary_tags": [],
+            "search_tokens": ["kebab", "kebabas", "doner"]
+          },
+          {
+            "name": "Döner",
+            "name_en": "Doner",
+            "price_cents": 650,
+            "category": "kebab",
+            "dietary_tags": ["halal"],
+            "search_tokens": ["doner", "döner", "kebab", "kebabas"]
+          },
+          {
+            "name": "Šaurma",
+            "name_en": "Shawarma",
+            "price_cents": 620,
+            "category": "kebab",
+            "dietary_tags": [],
+            "search_tokens": ["saurma", "šaurma", "shawarma", "kebab"]
+          },
+          {
+            "name": "Gira",
+            "name_en": "Kvass",
+            "price_cents": 180,
+            "category": "drink",
+            "dietary_tags": [],
+            "search_tokens": ["gira"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Šaknys",
+      "slug": "saknys",
+      "lat": 54.6789,
+      "lng": 25.2775,
+      "address": "Pylimo g. 21, Vilnius",
+      "city": "Vilnius",
+      "hours": [
+        {"weekday": 0, "open_minute": 660, "close_minute": 1260},
+        {"weekday": 1, "open_minute": 660, "close_minute": 1260},
+        {"weekday": 2, "open_minute": 660, "close_minute": 1260},
+        {"weekday": 3, "open_minute": 660, "close_minute": 1260},
+        {"weekday": 4, "open_minute": 660, "close_minute": 1260},
+        {"weekday": 5, "open_minute": 660, "close_minute": 1080}
+      ],
+      "menu": {
+        "currency": "EUR",
+        "language": "lt",
+        "last_verified_at": "2026-09-08T12:00:00+00:00",
+        "items": [
+          {
+            "name": "Lęšių sriuba",
+            "name_en": "Lentil soup",
+            "price_cents": 490,
+            "category": "soup",
+            "dietary_tags": ["vegan", "vegetarian", "gluten_free"],
+            "search_tokens": ["lesiu", "sriuba", "lentil"]
+          },
+          {
+            "name": "Daržovių kebabas",
+            "name_en": "Vegetable kebab",
+            "description": "Keptos daržovės, hummusas, pita.",
+            "price_cents": 720,
+            "category": "kebab",
+            "dietary_tags": ["vegan", "vegetarian"],
+            "search_tokens": ["kebab", "kebabas", "darzoviu"]
+          },
+          {
+            "name": "Keptas sūris",
+            "name_en": "Fried cheese",
+            "price_cents": 890,
+            "category": "main",
+            "dietary_tags": ["vegetarian"],
+            "search_tokens": ["suris", "cheese"]
+          },
+          {
+            "name": "Humuso lėkštė",
+            "name_en": "Hummus plate",
+            "price_cents": 650,
+            "category": "main",
+            "dietary_tags": ["vegan", "vegetarian", "lactose_free"],
+            "search_tokens": ["humusas", "hummus"]
+          },
+          {
+            "name": "Šokoladinis pyragas",
+            "name_en": "Chocolate cake",
+            "price_cents": 450,
+            "category": "dessert",
+            "dietary_tags": ["vegetarian"],
+            "search_tokens": ["pyragas", "cake"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Naujamiesčio picerija",
+      "slug": "naujamiescio-picerija",
+      "lat": 54.6765,
+      "lng": 25.2752,
+      "address": "Naugarduko g. 12, Vilnius",
+      "city": "Vilnius",
+      "hours": [
+        {"weekday": 0, "open_minute": 720, "close_minute": 1380},
+        {"weekday": 1, "open_minute": 720, "close_minute": 1380},
+        {"weekday": 2, "open_minute": 720, "close_minute": 1380},
+        {"weekday": 3, "open_minute": 720, "close_minute": 1380},
+        {"weekday": 4, "open_minute": 720, "close_minute": 1440},
+        {"weekday": 5, "open_minute": 720, "close_minute": 1440},
+        {"weekday": 6, "open_minute": 780, "close_minute": 1320}
+      ],
+      "menu": {
+        "currency": "EUR",
+        "language": "lt",
+        "last_verified_at": "2026-09-08T12:00:00+00:00",
+        "items": [
+          {
+            "name": "Margarita",
+            "name_en": "Margherita",
+            "price_cents": 850,
+            "category": "pizza",
+            "dietary_tags": ["vegetarian"],
+            "search_tokens": ["margarita", "pizza"]
+          },
+          {
+            "name": "Diavola",
+            "name_en": "Diavola",
+            "description": "Aštri pica su saliami. Dietary tags unverified.",
+            "price_cents": 990,
+            "category": "pizza",
+            "dietary_tags": [],
+            "search_tokens": ["diavola", "pizza"]
+          },
+          {
+            "name": "Veganiška margarita",
+            "name_en": "Vegan margherita",
+            "price_cents": 950,
+            "category": "pizza",
+            "dietary_tags": ["vegan", "vegetarian", "lactose_free"],
+            "search_tokens": ["margarita", "pizza", "vegan"]
+          },
+          {
+            "name": "Dienos sriuba",
+            "name_en": "Soup of the day",
+            "price_cents": 400,
+            "category": "soup",
+            "dietary_tags": [],
+            "search_tokens": ["sriuba", "soup"]
+          },
+          {
+            "name": "Alus 0.4",
+            "name_en": "Beer 0.4",
+            "price_cents": 350,
+            "category": "drink",
+            "dietary_tags": [],
+            "search_tokens": ["alus", "beer"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fabijoniškių valgykla",
+      "slug": "fabijoniskiu-valgykla",
+      "lat": 54.7335,
+      "lng": 25.2418,
+      "address": "S. Stanevičiaus g. 21, Vilnius",
+      "city": "Vilnius",
+      "hours": [
+        {"weekday": 0, "open_minute": 480, "close_minute": 1020},
+        {"weekday": 1, "open_minute": 480, "close_minute": 1020},
+        {"weekday": 2, "open_minute": 480, "close_minute": 1020},
+        {"weekday": 3, "open_minute": 480, "close_minute": 1020},
+        {"weekday": 4, "open_minute": 480, "close_minute": 1020}
+      ],
+      "menu": {
+        "currency": "EUR",
+        "language": "lt",
+        "last_verified_at": "2026-09-08T12:00:00+00:00",
+        "items": [
+          {
+            "name": "Cepelinai su mėsa",
+            "name_en": "Cepelinai with meat",
+            "price_cents": 720,
+            "category": "main",
+            "dietary_tags": [],
+            "search_tokens": ["cepelinai", "didzkukuliai"]
+          },
+          {
+            "name": "Barščiai",
+            "name_en": "Borscht",
+            "price_cents": 350,
+            "category": "soup",
+            "dietary_tags": [],
+            "search_tokens": ["barsčiai", "sriuba"]
+          },
+          {
+            "name": "Grikiai su daržovėmis",
+            "name_en": "Buckwheat with vegetables",
+            "price_cents": 420,
+            "category": "main",
+            "dietary_tags": ["vegan", "vegetarian"],
+            "search_tokens": ["grikiai", "darzoves"]
+          },
+          {
+            "name": "Kebabas",
+            "name_en": "Kebab",
+            "price_cents": 499,
+            "category": "kebab",
+            "dietary_tags": [],
+            "search_tokens": ["kebab", "kebabas", "doner"]
+          },
+          {
+            "name": "Kompotas",
+            "name_en": "Kompot",
+            "price_cents": 100,
+            "category": "drink",
+            "dietary_tags": [],
+            "search_tokens": ["kompotas"]
+          }
+        ]
+      }
+    }
+  ]
+}

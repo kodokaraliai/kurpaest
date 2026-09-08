@@ -9,7 +9,7 @@ from uuid import uuid4
 
 import pytest
 
-from kurpaest.catalog import MOCK_PLACES
+from kurpaest.catalog import PLACES
 from kurpaest.domain import (
     ItemCategory,
     MenuItem,
@@ -130,19 +130,22 @@ def test_parse_bbox_rejects_malformed() -> None:
         parse_bbox("54.71,25.22,54.66,25.34")
 
 
-def test_mock_catalog_vilnius_viewport_excludes_kaunas() -> None:
+def test_seed_catalog_old_town_viewport_excludes_fabijoniskes() -> None:
     south, west, north, east = VILNIUS_BOX
-    found = places_in_bounds(MOCK_PLACES, south, west, north, east)
+    found = places_in_bounds(PLACES, south, west, north, east)
     cities = {place.city for place in found}
     slugs = {place.slug for place in found}
     assert cities == {"Vilnius"}
-    assert "kauno-kebabas" not in slugs
+    assert "fabijoniskiu-valgykla" not in slugs
     assert "senamiescio-kebabine" in slugs
     assert all(place.lat is not None and place.lng is not None for place in found)
 
 
 def test_places_for_items_returns_unique_owning_places() -> None:
-    first, second, _third, kaunas = MOCK_PLACES
+    by_slug = {place.slug: place for place in PLACES}
+    first = by_slug["senamiescio-kebabine"]
+    second = by_slug["naujamiescio-picerija"]
+    canteen = by_slug["fabijoniskiu-valgykla"]
     item_a = MenuItem(
         id=uuid4(),
         place_id=first.id,
@@ -161,14 +164,14 @@ def test_places_for_items_returns_unique_owning_places() -> None:
     )
     item_c = MenuItem(
         id=uuid4(),
-        place_id=kaunas.id,
+        place_id=canteen.id,
         menu_id=uuid4(),
         name="Kebabas",
         price_cents=399,
         category=ItemCategory.KEBAB,
     )
-    found = places_for_items((item_a, item_b, item_c), MOCK_PLACES)
-    assert [place.slug for place in found] == [first.slug, kaunas.slug]
+    found = places_for_items((item_a, item_b, item_c), PLACES)
+    assert [place.slug for place in found] == [first.slug, canteen.slug]
     assert second not in found
 
 
