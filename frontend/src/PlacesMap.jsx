@@ -67,12 +67,15 @@ export default function PlacesMap({
   selectedPlace,
   labels,
   onSelectPlace,
+  dietary = [],
 }) {
   const fetchMode = controlledPlaces == null;
   const [fetched, setFetched] = useState([]);
   const [fetchedLoaded, setFetchedLoaded] = useState(false);
   const [fetchError, setFetchError] = useState(null);
   const timer = useRef(null);
+  const lastBounds = useRef(null);
+  const dietaryKey = dietary.join(",");
   const places = fetchMode ? fetched : controlledPlaces;
   const loaded = fetchMode ? fetchedLoaded : true;
   const error = fetchMode ? fetchError : null;
@@ -80,13 +83,16 @@ export default function PlacesMap({
   const loadBounds = useCallback(
     (bounds) => {
       if (!fetchMode) return;
+      lastBounds.current = bounds;
       if (timer.current) window.clearTimeout(timer.current);
       timer.current = window.setTimeout(async () => {
         const bbox = bboxQuery(bounds);
+        const params = new URLSearchParams({ bbox });
+        if (dietaryKey) {
+          params.set("dietary", dietaryKey);
+        }
         try {
-          const response = await fetch(
-            `/api/places?bbox=${encodeURIComponent(bbox)}`,
-          );
+          const response = await fetch(`/api/places?${params.toString()}`);
           if (!response.ok) {
             throw new Error(`places ${response.status}`);
           }
@@ -101,8 +107,14 @@ export default function PlacesMap({
         }
       }, DEBOUNCE_MS);
     },
-    [fetchMode, labels.mapError],
+    [fetchMode, labels.mapError, dietaryKey],
   );
+
+  useEffect(() => {
+    if (fetchMode && lastBounds.current) {
+      loadBounds(lastBounds.current);
+    }
+  }, [dietaryKey, fetchMode, loadBounds]);
 
   useEffect(() => {
     return () => {

@@ -12,6 +12,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from kurpaest.catalog import ITEMS, MENUS, PLACES
+from kurpaest.dietary import places_with_dietary
 from kurpaest.domain import DietaryTag, Menu, MenuItem, Place
 from kurpaest.items import MenuItemWithPlace, cheapest_items, parse_near
 from kurpaest.menus import menu_for_place, menu_record_for_place, place_by_id
@@ -131,6 +132,7 @@ def _parse_dietary_query(raw: str | None) -> tuple[DietaryTag, ...]:
 def list_places(
     bbox: str | None = Query(default=None, description="s,w,n,e WGS84 viewport"),
     city: str | None = Query(default=None),
+    dietary: str | None = Query(default=None),
 ) -> dict[str, list[dict[str, object]]]:
     """Map pins for the current viewport. Does not download the whole country."""
     try:
@@ -138,6 +140,9 @@ def list_places(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     found = places_in_bounds(PLACES, south, west, north, east, city=city)
+    tags = _parse_dietary_query(dietary)
+    if tags:
+        found = places_with_dietary(found, ITEMS, tags)
     return {"places": [_place_pin(place) for place in found]}
 
 

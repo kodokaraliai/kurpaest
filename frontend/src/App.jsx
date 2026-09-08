@@ -40,7 +40,8 @@ function App() {
     }
   }, [lang]);
 
-  const queryActive = term.trim() !== "" || dietary.length > 0;
+  const searchActive = term.trim() !== "";
+  const queryActive = searchActive || dietary.length > 0;
 
   useEffect(() => {
     if (!queryActive) {
@@ -89,8 +90,8 @@ function App() {
   }, [term, dietary, queryActive, copy.searchError]);
 
   const mapPlaces = useMemo(
-    () => (queryActive ? placesForItems(results) : undefined),
-    [queryActive, results],
+    () => (searchActive ? placesForItems(results) : undefined),
+    [searchActive, results],
   );
   const selectedItem = results.find((item) => item.id === selectedId) ?? null;
 
@@ -178,6 +179,7 @@ function App() {
           places={mapPlaces}
           selectedPlace={selectedItem?.place}
           onSelectPlace={(place) => setOpenPlaceId(place.id)}
+          dietary={dietary}
           labels={{
             mapAria: copy.mapAria,
             mapError: copy.mapError,
@@ -189,6 +191,7 @@ function App() {
             placeId={openPlaceId}
             lang={lang}
             copy={copy}
+            dietary={dietary}
             onClose={() => setOpenPlaceId(null)}
           />
         ) : (

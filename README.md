@@ -35,6 +35,8 @@ The API listens on `http://127.0.0.1:8000/`. `GET /` returns JSON:
 
 `GET /items?q=kebab&sort=price` is cheapest-item search (optional `city`, `near=lat,lng`, `radius_m`, `dietary`). Matching is literal/token; Lithuanian aliases are a later work package. The Vite search box lists those rows and jumps each to its pin.
 
+Dietary chips are conjunctive and stateless (`dietary=vegan,gluten_free`). Unknown tags on an item do not match. `GET /places?bbox=&dietary=` keeps pins for places that have at least one verified matching item.
+
 `uv run python -m kurpaest` is the same entry. `--host` and `--port` are optional.
 
 ## Database (Postgres + PostGIS)

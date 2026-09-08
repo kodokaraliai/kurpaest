@@ -43,7 +43,21 @@ function TagList({ tags, copy }) {
   );
 }
 
-export default function PlacePanel({ placeId, lang, copy, onClose }) {
+function itemMatchesDietary(item, dietary) {
+  if (!dietary.length) {
+    return null;
+  }
+  const have = new Set(item.dietary_tags ?? []);
+  return dietary.every((tag) => have.has(tag));
+}
+
+export default function PlacePanel({
+  placeId,
+  lang,
+  copy,
+  onClose,
+  dietary = [],
+}) {
   const [place, setPlace] = useState(null);
   const [menu, setMenu] = useState(null);
   const [error, setError] = useState(null);
@@ -120,8 +134,16 @@ export default function PlacePanel({ placeId, lang, copy, onClose }) {
           <section key={category} className="menu-group">
             <h3>{categoryLabel(category, copy)}</h3>
             <ul className="menu-items">
-              {items.map((item) => (
-                <li key={item.id} className="menu-item">
+              {items.map((item) => {
+                const match = itemMatchesDietary(item, dietary);
+                const itemClass =
+                  match === true
+                    ? "menu-item is-match"
+                    : match === false
+                      ? "menu-item is-miss"
+                      : "menu-item";
+                return (
+                <li key={item.id} className={itemClass}>
                   <div className="menu-item-row">
                     <span className="result-name">{itemLabel(item, lang)}</span>
                     <span className="result-price">
@@ -133,7 +155,8 @@ export default function PlacePanel({ placeId, lang, copy, onClose }) {
                   ) : null}
                   <TagList tags={item.dietary_tags} copy={copy} />
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </section>
         ))}
