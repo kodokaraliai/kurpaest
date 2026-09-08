@@ -1,7 +1,4 @@
-"""Cheapest-item query over menu rows. No HTTP imports.
-
-Literal / token match only. Alias expansion and diacritic folding are WP-7.
-"""
+"""Cheapest-item query over menu rows. No HTTP imports."""
 
 from __future__ import annotations
 
@@ -9,6 +6,7 @@ import math
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
+from kurpaest.aliases import expand_term, fold_diacritics
 from kurpaest.dietary import dietary_tags, item_matches_dietary
 from kurpaest.domain import MenuItem, Place, _require_finite_float, _require_wgs84
 
@@ -38,14 +36,14 @@ def _haversine_m(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
 
 
 def _matches_term(item: MenuItem, term: str) -> bool:
-    needle = term.strip().lower()
-    if not needle:
+    needles = expand_term(term)
+    if not needles:
         return True
-    haystacks = [item.name.lower()]
+    haystacks = [fold_diacritics(item.name)]
     if item.name_en:
-        haystacks.append(item.name_en.lower())
-    haystacks.extend(token.lower() for token in item.search_tokens)
-    return any(needle in hay for hay in haystacks)
+        haystacks.append(fold_diacritics(item.name_en))
+    haystacks.extend(fold_diacritics(token) for token in item.search_tokens)
+    return any(needle in hay for needle in needles for hay in haystacks)
 
 
 def parse_near(raw: str) -> tuple[float, float]:
