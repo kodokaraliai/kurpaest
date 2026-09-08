@@ -56,7 +56,7 @@ uv run pytest tests/test_persistence.py -q
 
 That includes `test_store_save_load_round_trip` against the real database. The rest of the suite: `uv run pytest`.
 
-Vilnius seed (places + itemized menus) lives in `seed/vilnius.json`. Load it through the WP-2 store:
+Vilnius seed (places + itemized menus) lives in `seed/vilnius.json`. How to add a kitchen: [docs/contributing-menus.md](docs/contributing-menus.md) (`uv run python -m kurpaest.seed` validates). Load it through the WP-2 store:
 
 ```bash
 uv run python -m kurpaest.persistence.load_seed

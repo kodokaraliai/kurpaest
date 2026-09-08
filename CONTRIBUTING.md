@@ -32,6 +32,18 @@ npm run build
 
 Do not instruct anyone to open the built files via `file://`.
 
+## Adding a place
+
+Manual contribution is a PR against `seed/vilnius.json`. Format, validation
+(coordinates, integer `price_cents`, explicit dietary tags, `last_verified_at`),
+and the checklist: [docs/contributing-menus.md](docs/contributing-menus.md).
+
+```bash
+uv run python -m kurpaest.seed
+```
+
+No admin UI. Do not scrape a live menu.
+
 ## Issues
 
 Claim the GitHub issue before you start (assign yourself): [kodokaraliai/kurpaest/issues](https://github.com/kodokaraliai/kurpaest/issues). One work package per PR unless the issue says otherwise.

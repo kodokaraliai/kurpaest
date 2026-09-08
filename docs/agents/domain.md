@@ -26,4 +26,5 @@ src/kurpaest/dietary.py WP-6 conjunctive tag filter (no HTTP)
 src/kurpaest/catalog.py  map pins and menus from the WP-8 seed
 src/kurpaest/seed.py    WP-8 JSON → domain types
 seed/vilnius.json       reviewed Vilnius places + menus
+docs/contributing-menus.md  WP-10 contribution format + PR checklist
 ```

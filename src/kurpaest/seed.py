@@ -91,11 +91,20 @@ def _optional_str(raw: object) -> str | None:
     return text if text else None
 
 
-@lru_cache(maxsize=1)
-def load_seed(path: Path | None = None) -> Seed:
-    """Load the reviewed Vilnius seed into WP-1 types."""
-    source = path or SEED_PATH
-    payload = json.loads(source.read_text(encoding="utf-8"))
+def _require_key(row: dict[str, object], key: str, where: str) -> object:
+    if key not in row:
+        raise ValueError(f"{where}: {key} is required")
+    return row[key]
+
+
+def seed_from_payload(payload: object) -> Seed:
+    """Validate contribution JSON and build domain records.
+
+    Coordinates, integer price_cents, and last_verified_at are required.
+    Dietary tags are asserted only; names never imply a tag.
+    """
+    if not isinstance(payload, dict):
+        raise TypeError("seed must be a JSON object")
     places_raw = payload.get("places")
     if not isinstance(places_raw, list) or not places_raw:
         raise ValueError("seed must contain a non-empty places list")
@@ -103,32 +112,48 @@ def load_seed(path: Path | None = None) -> Seed:
     places: list[Place] = []
     menus: list[Menu] = []
     items: list[MenuItem] = []
+    seen_slugs: set[tuple[str, str]] = set()
     for row in places_raw:
-        slug = str(row["slug"])
+        if not isinstance(row, dict):
+            raise TypeError("each place must be a JSON object")
+        slug = str(_require_key(row, "slug", "place"))
+        city = str(_require_key(row, "city", f"place {slug}"))
+        if (city, slug) in seen_slugs:
+            raise ValueError(f"duplicate slug {slug} in {city}")
+        seen_slugs.add((city, slug))
         place_id = _place_id(slug)
+        menu_row = _require_key(row, "menu", f"place {slug}")
+        if not isinstance(menu_row, dict):
+            raise TypeError(f"place {slug}: menu must be a JSON object")
+        last_verified = _as_datetime(
+            _require_key(menu_row, "last_verified_at", f"place {slug} menu")
+        )
         place = Place(
             id=place_id,
-            name=str(row["name"]),
+            name=str(_require_key(row, "name", f"place {slug}")),
             slug=slug,
-            lat=row["lat"],
-            lng=row["lng"],
-            address=str(row["address"]),
-            city=str(row["city"]),
+            lat=_require_key(row, "lat", f"place {slug}"),
+            lng=_require_key(row, "lng", f"place {slug}"),
+            address=str(_require_key(row, "address", f"place {slug}")),
+            city=city,
             hours=_hours(row.get("hours")),
             source=PlaceSource.SEED,
-            updated_at=_as_datetime(
-                row.get("updated_at") or row["menu"]["last_verified_at"]
+            updated_at=(
+                _as_datetime(row["updated_at"])
+                if row.get("updated_at")
+                else last_verified
             ),
             phone=_optional_str(row.get("phone")),
             website=_optional_str(row.get("website")),
         )
-        menu_row = row["menu"]
         menu = Menu(
             id=_menu_id(slug),
             place_id=place_id,
-            currency=Currency(menu_row["currency"]),
-            last_verified_at=_as_datetime(menu_row["last_verified_at"]),
-            language=MenuLanguage(menu_row["language"]),
+            currency=Currency(_require_key(menu_row, "currency", f"place {slug} menu")),
+            last_verified_at=last_verified,
+            language=MenuLanguage(
+                _require_key(menu_row, "language", f"place {slug} menu")
+            ),
         )
         item_rows = menu_row.get("items")
         if not isinstance(item_rows, list) or not item_rows:
@@ -136,18 +161,45 @@ def load_seed(path: Path | None = None) -> Seed:
         places.append(place)
         menus.append(menu)
         for item_row in item_rows:
+            if not isinstance(item_row, dict):
+                raise TypeError(f"place {slug}: each item must be a JSON object")
+            name = str(_require_key(item_row, "name", f"place {slug} item"))
             items.append(
                 MenuItem(
-                    id=_item_id(slug, str(item_row["name"])),
+                    id=_item_id(slug, name),
                     place_id=place_id,
                     menu_id=menu.id,
-                    name=str(item_row["name"]),
+                    name=name,
                     name_en=_optional_str(item_row.get("name_en")),
                     description=_optional_str(item_row.get("description")),
-                    price_cents=item_row["price_cents"],
-                    category=ItemCategory(item_row["category"]),
+                    price_cents=_require_key(
+                        item_row, "price_cents", f"place {slug} item {name}"
+                    ),
+                    category=ItemCategory(
+                        _require_key(item_row, "category", f"place {slug} item {name}")
+                    ),
                     dietary_tags=_tags(item_row.get("dietary_tags")),
                     search_tokens=_tokens(item_row.get("search_tokens")),
                 )
             )
     return Seed(places=tuple(places), menus=tuple(menus), items=tuple(items))
+
+
+@lru_cache(maxsize=1)
+def load_seed(path: Path | None = None) -> Seed:
+    """Load the reviewed Vilnius seed into WP-1 types."""
+    source = path or SEED_PATH
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    return seed_from_payload(payload)
+
+
+def main() -> None:
+    records = load_seed()
+    print(
+        f"ok: {len(records.places)} places, "
+        f"{len(records.menus)} menus, {len(records.items)} items"
+    )
+
+
+if __name__ == "__main__":
+    main()
