@@ -1,7 +1,10 @@
-"""Place catalog served to the map. Sourced from the WP-8 Vilnius seed."""
+"""Place catalog served to the map and place panels. Sourced from the WP-8 seed."""
 
 from __future__ import annotations
 
 from kurpaest.seed import load_seed
 
-PLACES = load_seed().places
+_SEED = load_seed()
+PLACES = _SEED.places
+MENUS = _SEED.menus
+ITEMS = _SEED.items

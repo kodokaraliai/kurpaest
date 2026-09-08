@@ -22,6 +22,28 @@ export const COPY = {
     showingVerified:
       "Rodomi patiekalai su patvirtintomis mitybos žymomis. Nežinomos žymos neatitinka filtro.",
     showOnMap: "Rodyti žemėlapyje",
+    menu: "Meniu",
+    closePlace: "Uždaryti",
+    placeError: "Nepavyko įkelti šios vietos meniu.",
+    loadingMenu: "Kraunamas meniu…",
+    lastVerified: "Patikrinta",
+    hours: "Valandos",
+    cat_kebab: "Kebabai",
+    cat_pizza: "Pica",
+    cat_soup: "Sriubos",
+    cat_main: "Pagrindiniai",
+    cat_dessert: "Desertai",
+    cat_drink: "Gėrimai",
+    cat_other: "Kita",
+    weekday_0: "Pr",
+    weekday_1: "An",
+    weekday_2: "Tr",
+    weekday_3: "Kt",
+    weekday_4: "Pn",
+    weekday_5: "Št",
+    weekday_6: "Sk",
+    nut_free: "Be riešutų",
+    pescatarian: "Peskatariška",
   },
   en: {
     brand: "kurpaest.lt",
@@ -46,6 +68,28 @@ export const COPY = {
     showingVerified:
       "Showing items with verified dietary tags. Unknown tags do not match a filter.",
     showOnMap: "Show on map",
+    menu: "Menu",
+    closePlace: "Close",
+    placeError: "Could not load this place's menu.",
+    loadingMenu: "Loading menu…",
+    lastVerified: "Verified",
+    hours: "Hours",
+    cat_kebab: "Kebabs",
+    cat_pizza: "Pizza",
+    cat_soup: "Soups",
+    cat_main: "Mains",
+    cat_dessert: "Desserts",
+    cat_drink: "Drinks",
+    cat_other: "Other",
+    weekday_0: "Mon",
+    weekday_1: "Tue",
+    weekday_2: "Wed",
+    weekday_3: "Thu",
+    weekday_4: "Fri",
+    weekday_5: "Sat",
+    weekday_6: "Sun",
+    nut_free: "Nut-free",
+    pescatarian: "Pescatarian",
   },
 };
 
@@ -70,4 +114,58 @@ export function itemLabel(item, lang) {
     return item.name_en;
   }
   return item.name;
+}
+
+export const CATEGORY_ORDER = [
+  "kebab",
+  "pizza",
+  "soup",
+  "main",
+  "dessert",
+  "drink",
+  "other",
+];
+
+export function categoryLabel(category, copy) {
+  return copy[`cat_${category}`] ?? category;
+}
+
+export function formatVerified(iso, copy, lang) {
+  if (!iso) {
+    return null;
+  }
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return `${copy.lastVerified} ${iso}`;
+  }
+  const formatted = date.toLocaleDateString(lang === "lt" ? "lt-LT" : "en-GB", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  return `${copy.lastVerified} ${formatted}`;
+}
+
+export function formatMinutes(total) {
+  const hours = Math.floor(total / 60);
+  const minutes = total % 60;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+export function groupItemsByCategory(items) {
+  const groups = new Map();
+  for (const item of items) {
+    const category = CATEGORY_ORDER.includes(item.category)
+      ? item.category
+      : "other";
+    const bucket = groups.get(category);
+    if (bucket) {
+      bucket.push(item);
+    } else {
+      groups.set(category, [item]);
+    }
+  }
+  return CATEGORY_ORDER.filter((category) => groups.has(category)).map(
+    (category) => [category, groups.get(category)],
+  );
 }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import PlacePanel from "./PlacePanel.jsx";
 import PlacesMap from "./PlacesMap.jsx";
 import ResultsList from "./ResultsList.jsx";
 import { COPY, DIETARY_IDS } from "./copy.js";
@@ -25,6 +26,7 @@ function App() {
   const [term, setTerm] = useState("");
   const [dietary, setDietary] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [openPlaceId, setOpenPlaceId] = useState(null);
   const copy = COPY[lang];
 
   useEffect(() => {
@@ -130,20 +132,30 @@ function App() {
         <PlacesMap
           places={mapPlaces}
           selectedPlace={selectedItem?.place}
+          onSelectPlace={(place) => setOpenPlaceId(place.id)}
           labels={{
             mapAria: copy.mapAria,
             mapError: copy.mapError,
             noPlacesInView: copy.noPlacesInView,
           }}
         />
-        <ResultsList
-          items={results}
-          active={queryActive}
-          lang={lang}
-          copy={copy}
-          selectedId={selectedId}
-          onSelect={(item) => setSelectedId(item.id)}
-        />
+        {openPlaceId ? (
+          <PlacePanel
+            placeId={openPlaceId}
+            lang={lang}
+            copy={copy}
+            onClose={() => setOpenPlaceId(null)}
+          />
+        ) : (
+          <ResultsList
+            items={results}
+            active={queryActive}
+            lang={lang}
+            copy={copy}
+            selectedId={selectedId}
+            onSelect={(item) => setSelectedId(item.id)}
+          />
+        )}
       </div>
     </div>
   );

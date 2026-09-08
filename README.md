@@ -31,6 +31,8 @@ The API listens on `http://127.0.0.1:8000/`. `GET /` returns JSON:
 
 `GET /places?bbox=s,w,n,e` returns map pins in that viewport (`city` is optional). Bbox is required — the handler does not download the whole country. Pins come from the reviewed Vilnius seed (`seed/vilnius.json`).
 
+`GET /places/{id}` is place detail (hours, `last_verified_at`). `GET /places/{id}/menu` is the itemized menu: integer `price_cents`, currency EUR, dietary tags. Clicking a map pin opens that menu in the Vite app.
+
 `uv run python -m kurpaest` is the same entry. `--host` and `--port` are optional.
 
 ## Database (Postgres + PostGIS)
