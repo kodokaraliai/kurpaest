@@ -22,6 +22,8 @@ export const COPY = {
     showingVerified:
       "Rodomi patiekalai su patvirtintomis mitybos žymomis. Nežinomos žymos neatitinka filtro.",
     showOnMap: "Rodyti žemėlapyje",
+    searching: "Ieškoma…",
+    searchError: "Nepavyko ieškoti patiekalų.",
     menu: "Meniu",
     closePlace: "Uždaryti",
     placeError: "Nepavyko įkelti šios vietos meniu.",
@@ -68,6 +70,8 @@ export const COPY = {
     showingVerified:
       "Showing items with verified dietary tags. Unknown tags do not match a filter.",
     showOnMap: "Show on map",
+    searching: "Searching…",
+    searchError: "Could not search items.",
     menu: "Menu",
     closePlace: "Close",
     placeError: "Could not load this place's menu.",
