@@ -1,0 +1,152 @@
+[
+  {
+    "id": "seed-kebab-pita",
+    "name": "Kebabas pita",
+    "name_en": "Kebab in pita",
+    "price_cents": 550,
+    "dietary_tags": [],
+    "search_tokens": ["kebab", "kebabas", "doner", "pita"],
+    "place": {
+      "id": "senamiescio-kebabine",
+      "name": "Senamiesčio kebabinė",
+      "lat": 54.6818,
+      "lng": 25.2874,
+      "address": "Pilies g. 8, Vilnius"
+    }
+  },
+  {
+    "id": "seed-kebab-plate",
+    "name": "Kebabas lėkštėje",
+    "name_en": "Kebab plate",
+    "price_cents": 790,
+    "dietary_tags": [],
+    "search_tokens": ["kebab", "kebabas", "doner"],
+    "place": {
+      "id": "senamiescio-kebabine",
+      "name": "Senamiesčio kebabinė",
+      "lat": 54.6818,
+      "lng": 25.2874,
+      "address": "Pilies g. 8, Vilnius"
+    }
+  },
+  {
+    "id": "seed-doner",
+    "name": "Döner",
+    "name_en": "Doner",
+    "price_cents": 650,
+    "dietary_tags": ["halal"],
+    "search_tokens": ["doner", "döner", "kebab", "kebabas"],
+    "place": {
+      "id": "senamiescio-kebabine",
+      "name": "Senamiesčio kebabinė",
+      "lat": 54.6818,
+      "lng": 25.2874,
+      "address": "Pilies g. 8, Vilnius"
+    }
+  },
+  {
+    "id": "seed-canteen-kebab",
+    "name": "Kebabas",
+    "name_en": "Kebab",
+    "price_cents": 499,
+    "dietary_tags": [],
+    "search_tokens": ["kebab", "kebabas", "doner"],
+    "place": {
+      "id": "fabijoniskiu-valgykla",
+      "name": "Fabijoniškių valgykla",
+      "lat": 54.7335,
+      "lng": 25.2418,
+      "address": "S. Stanevičiaus g. 21, Vilnius"
+    }
+  },
+  {
+    "id": "seed-lentil",
+    "name": "Lęšių sriuba",
+    "name_en": "Lentil soup",
+    "price_cents": 490,
+    "dietary_tags": ["vegan", "vegetarian", "gluten_free"],
+    "search_tokens": ["sriuba", "lentil"],
+    "place": {
+      "id": "saknys",
+      "name": "Šaknys",
+      "lat": 54.6789,
+      "lng": 25.2775,
+      "address": "Pylimo g. 21, Vilnius"
+    }
+  },
+  {
+    "id": "seed-veg-kebab",
+    "name": "Daržovių kebabas",
+    "name_en": "Vegetable kebab",
+    "price_cents": 720,
+    "dietary_tags": ["vegan", "vegetarian"],
+    "search_tokens": ["kebab", "kebabas", "darzoviu"],
+    "place": {
+      "id": "saknys",
+      "name": "Šaknys",
+      "lat": 54.6789,
+      "lng": 25.2775,
+      "address": "Pylimo g. 21, Vilnius"
+    }
+  },
+  {
+    "id": "seed-fried-cheese",
+    "name": "Keptas sūris",
+    "name_en": "Fried cheese",
+    "price_cents": 890,
+    "dietary_tags": ["vegetarian"],
+    "search_tokens": ["suris", "cheese"],
+    "place": {
+      "id": "saknys",
+      "name": "Šaknys",
+      "lat": 54.6789,
+      "lng": 25.2775,
+      "address": "Pylimo g. 21, Vilnius"
+    }
+  },
+  {
+    "id": "seed-margarita",
+    "name": "Margarita",
+    "name_en": "Margherita",
+    "price_cents": 850,
+    "dietary_tags": ["vegetarian"],
+    "search_tokens": ["margarita", "pizza"],
+    "place": {
+      "id": "naujamiescio-picerija",
+      "name": "Naujamiesčio picerija",
+      "lat": 54.6765,
+      "lng": 25.2752,
+      "address": "Naugarduko g. 12, Vilnius"
+    }
+  },
+  {
+    "id": "seed-diavola",
+    "name": "Diavola",
+    "name_en": "Diavola",
+    "price_cents": 990,
+    "dietary_tags": [],
+    "search_tokens": ["diavola", "pizza"],
+    "place": {
+      "id": "naujamiescio-picerija",
+      "name": "Naujamiesčio picerija",
+      "lat": 54.6765,
+      "lng": 25.2752,
+      "address": "Naugarduko g. 12, Vilnius"
+    }
+  },
+  {
+    "id": "seed-vegan-pizza",
+    "name": "Veganiška margarita",
+    "name_en": "Vegan margherita",
+    "price_cents": 950,
+    "dietary_tags": ["vegan", "vegetarian", "lactose_free"],
+    "search_tokens": ["margarita", "pizza", "vegan"],
+    "place": {
+      "id": "naujamiescio-picerija",
+      "name": "Naujamiesčio picerija",
+      "lat": 54.6765,
+      "lng": 25.2752,
+      "address": "Naugarduko g. 12, Vilnius"
+    }
+  }
+]

@@ -4,6 +4,7 @@ import {
   Marker,
   Popup,
   TileLayer,
+  useMap,
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
@@ -48,12 +49,32 @@ function BoundsFetcher({ onBounds, enabled }) {
   return null;
 }
 
-export default function PlacesMap({ places: controlledPlaces }) {
+function FlyTo({ place }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!place) return;
+    map.flyTo(
+      [place.lat, place.lng],
+      Math.max(map.getZoom(), 15),
+      { duration: 0.35 },
+    );
+  }, [place, map]);
+  return null;
+}
+
+export default function PlacesMap({
+  places: controlledPlaces,
+  selectedPlace,
+  labels,
+}) {
   const fetchMode = controlledPlaces == null;
   const [fetched, setFetched] = useState([]);
-  const [error, setError] = useState(null);
+  const [fetchedLoaded, setFetchedLoaded] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
   const timer = useRef(null);
   const places = fetchMode ? fetched : controlledPlaces;
+  const loaded = fetchMode ? fetchedLoaded : true;
+  const error = fetchMode ? fetchError : null;
 
   const loadBounds = useCallback(
     (bounds) => {
@@ -69,14 +90,17 @@ export default function PlacesMap({ places: controlledPlaces }) {
             throw new Error(`places ${response.status}`);
           }
           const body = await response.json();
-          setFetched(Array.isArray(body.places) ? body.places : []);
-          setError(null);
+          const next = Array.isArray(body.places) ? body.places : [];
+          setFetched(next);
+          setFetchError(null);
+          setFetchedLoaded(true);
         } catch {
-          setError("Could not load places for this map view.");
+          setFetchError(labels.mapError);
+          setFetchedLoaded(true);
         }
       }, DEBOUNCE_MS);
     },
-    [fetchMode],
+    [fetchMode, labels.mapError],
   );
 
   useEffect(() => {
@@ -85,11 +109,18 @@ export default function PlacesMap({ places: controlledPlaces }) {
     };
   }, []);
 
+  const empty = loaded && !error && places.length === 0;
+
   return (
-    <section className="places-map-wrap" aria-label="Map of places to eat">
+    <section className="places-map-wrap" aria-label={labels.mapAria}>
       {error ? (
         <p className="map-status" role="status">
           {error}
+        </p>
+      ) : null}
+      {empty ? (
+        <p className="map-status" role="status">
+          {labels.noPlacesInView}
         </p>
       ) : null}
       <MapContainer
@@ -103,6 +134,7 @@ export default function PlacesMap({ places: controlledPlaces }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <BoundsFetcher onBounds={loadBounds} enabled={fetchMode} />
+        <FlyTo place={selectedPlace} />
         {places.map((place) => (
           <Marker
             key={place.id}
