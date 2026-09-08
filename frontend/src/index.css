@@ -315,6 +315,14 @@ h1 {
   background: var(--bg);
 }
 
+.menu-item.is-match {
+  outline: 1px solid var(--accent);
+}
+
+.menu-item.is-miss {
+  opacity: 0.55;
+}
+
 .menu-item-row {
   display: flex;
   justify-content: space-between;

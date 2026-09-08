@@ -208,3 +208,50 @@ def test_items_near_without_radius_is_400() -> None:
         params={"q": "kebab", "near": "54.68,25.27"},
     )
     assert response.status_code == 400
+
+
+def test_items_vegan_pizza_drops_untagged_mixed_menu_rows() -> None:
+    response = TestClient(app).get(
+        "/items",
+        params={"q": "pizza", "dietary": "vegan"},
+    )
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert items
+    names = {row["name"] for row in items}
+    assert "Veganiška margarita" in names
+    assert "Diavola" not in names
+    assert all("vegan" in row["dietary_tags"] for row in items)
+
+
+def test_items_conjunctive_dietary() -> None:
+    response = TestClient(app).get(
+        "/items",
+        params={"dietary": "vegan,gluten_free"},
+    )
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert items
+    for row in items:
+        assert "vegan" in row["dietary_tags"]
+        assert "gluten_free" in row["dietary_tags"]
+
+
+def test_places_dietary_keeps_kitchens_with_verified_tags() -> None:
+    response = TestClient(app).get(
+        "/places",
+        params={"bbox": VILNIUS_BBOX, "dietary": "vegan"},
+    )
+    assert response.status_code == 200
+    slugs = {pin["slug"] for pin in response.json()["places"]}
+    assert "saknys" in slugs
+    assert "naujamiescio-picerija" in slugs
+    assert "senamiescio-kebabine" not in slugs
+
+
+def test_places_unknown_dietary_tag_is_400() -> None:
+    response = TestClient(app).get(
+        "/places",
+        params={"bbox": VILNIUS_BBOX, "dietary": "keto"},
+    )
+    assert response.status_code == 400

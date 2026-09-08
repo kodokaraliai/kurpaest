@@ -9,13 +9,8 @@ import math
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
-from kurpaest.domain import (
-    DietaryTag,
-    MenuItem,
-    Place,
-    _require_finite_float,
-    _require_wgs84,
-)
+from kurpaest.dietary import dietary_tags, item_matches_dietary
+from kurpaest.domain import MenuItem, Place, _require_finite_float, _require_wgs84
 
 _EARTH_RADIUS_M = 6_371_000.0
 _DEFAULT_LIMIT = 20
@@ -51,10 +46,6 @@ def _matches_term(item: MenuItem, term: str) -> bool:
         haystacks.append(item.name_en.lower())
     haystacks.extend(token.lower() for token in item.search_tokens)
     return any(needle in hay for hay in haystacks)
-
-
-def _parse_dietary(dietary: Iterable[object]) -> frozenset[DietaryTag]:
-    return frozenset(DietaryTag(tag) for tag in dietary)
 
 
 def parse_near(raw: str) -> tuple[float, float]:
@@ -101,7 +92,7 @@ def cheapest_items(
     else:
         radius = None
 
-    tags = _parse_dietary(dietary)
+    tags = dietary_tags(dietary)
     city_filter = city.strip() if isinstance(city, str) and city.strip() else None
     by_id = {place.id: place for place in places}
 
@@ -109,7 +100,7 @@ def cheapest_items(
     for item in items:
         if not _matches_term(item, term):
             continue
-        if tags and not tags <= item.dietary_tags:
+        if not item_matches_dietary(item, tags):
             continue
         place = by_id.get(item.place_id)
         if place is None:
