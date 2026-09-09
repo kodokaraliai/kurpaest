@@ -13,6 +13,18 @@ This repository is a **launchable skeleton** plus that architecture. The map, me
 - Node.js 22+ and npm
 - Docker (for local Postgres + PostGIS)
 
+## Try it
+
+One command installs deps and starts the API plus the Vite UI:
+
+```bash
+./scripts/run.sh
+```
+
+Open `http://127.0.0.1:5173/`. Ctrl-C stops both. Vite **must be served** — `file://` is not a valid run mode. Postgres is not required for this path; the HTTP handlers load `seed/vilnius.json` in-process.
+
+The API is `http://127.0.0.1:8000/`. The two-process commands below are the same steps, split out.
+
 ## Backend
 
 ```bash
@@ -92,6 +104,7 @@ src/kurpaest/persistence/  PostGIS adapter
 seed/             Vilnius places + itemized menus (JSON)
 migrations/       SQL schema (PostGIS geography + gist)
 compose.yaml      local Postgres + PostGIS
+scripts/run.sh    one-shot API + Vite launcher
 tests/            pytest — drives the real ASGI app and domain/persistence
 frontend/         React + Vite
 docs/architecture.md
