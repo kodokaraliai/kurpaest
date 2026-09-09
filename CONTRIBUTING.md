@@ -9,6 +9,8 @@ uv sync --group dev
 cd frontend && npm install
 ```
 
+To run the API and Vite UI together: `./scripts/run.sh` (open `http://127.0.0.1:5173/`; Ctrl-C stops both).
+
 ## Python
 
 - Package and versions: **uv** (`uv lock`, `uv sync`). Do not add a pip-only workflow.

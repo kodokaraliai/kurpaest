@@ -2,6 +2,8 @@
 
 React + Vite UI for [kurpaest.lt](https://kurpaest.lt). Serve it — Vite does not run from `file://`.
 
+From the repo root, `./scripts/run.sh` starts this UI and the Python API together.
+
 ```bash
 npm install
 npm run dev      # http://127.0.0.1:5173/
